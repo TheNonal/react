@@ -2,11 +2,14 @@ import React from "react";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Items from "./components/Items";
+import Categories from "./components/Categories";
 
 class App extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
+      orders: [],
+      currentItems: [],
       items: [
         {
           id: 1,
@@ -14,7 +17,7 @@ class App extends React.Component {
           img: 'razer_barracuda_white.jpg',
           desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
           category: 'headphones',
-          price: '5.599'
+          price: '5599'
         },
         {
           id: 2,
@@ -22,7 +25,7 @@ class App extends React.Component {
           img: 'aoc2_black.jpg',
           desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
           category: 'screens',
-          price: '29.899'
+          price: '29899'
         },
         {
           id: 3,
@@ -30,15 +33,15 @@ class App extends React.Component {
           img: 'ardor_patron_red.jpg',
           desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
           category: 'keyboards',
-          price: '6.999'
+          price: '6999'
         },
         {
           id: 4,
           title: 'ПК ZET GAMING WARD H285',
           img: 'zet_ward.jpg',
           desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-          category: 'pc',
-          price: '86.999'
+          category: 'pcs',
+          price: '86999'
         },
         {
           id: 5,
@@ -46,7 +49,7 @@ class App extends React.Component {
           img: 'lamzu_atlantis_white.jpg',
           desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
           category: 'mouses',
-          price: '5.999'
+          price: '5999'
         },
         {
           id: 6,
@@ -54,7 +57,7 @@ class App extends React.Component {
           img: 'a4tech_bloody_yellow.jpg',
           desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
           category: 'headphones',
-          price: '3.199'
+          price: '3199'
         },
         {
           id: 7,
@@ -62,22 +65,51 @@ class App extends React.Component {
           img: 'ardor_patron_purple.jpg',
           desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
           category: 'keyboards',
-          price: '6.999'
+          price: '6999'
         }
 
       ]
     }
+    this.state.currentItems = this.state.items
+    this.addToOrder = this.addToOrder.bind(this)
+    this.deleteOrder = this.deleteOrder.bind(this)
+    this.chooseCategory = this.chooseCategory.bind(this)
   }
   render() {
     return (
       <div className="wrapper">
-        <Header />
-        <Items items={this.state.items} />
+        <Header orders={this.state.orders} onDelete={this.deleteOrder}/>
+        <Categories chooseCategory={this.chooseCategory}/>
+        <Items items={this.state.currentItems} onAdd={this.addToOrder} />
         <Footer />
       </div>
     )
   }
+
+  chooseCategory(category) {
+    if (category === 'all') {
+      this.setState ({currentItems: this.state.items})
+      return
+    }
+
+    this.setState ({
+      currentItems: this.state.items.filter(el => el.category === category)
+    })
+  }
   
+  deleteOrder(id) {
+    this.setState({orders: this.state.orders.filter(el => el.id !== id)})
+  }
+
+  addToOrder(item) {
+    let isInArray = false
+    this.state.orders.forEach(el => {
+      if (el.id === item.id)
+        isInArray = true
+    })
+    if (!isInArray)
+      this.setState({orders: [...this.state.orders, item] })
+  }
 }
 
 export default App;
